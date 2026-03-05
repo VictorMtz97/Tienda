@@ -31,6 +31,23 @@ class Ventas(tk.Frame ):
         self.tabla_carrito.column("precio", width=100, anchor="center")
         self.tabla_carrito.pack(side="left", fill="y", padx=10)
         #Tabla Carrito
+        
+        frame_caja= tk.Frame(self)
+        frame_caja.pack(side="right", fil="y", pady=10)
+
+        tk.Label(frame_caja, text="Caja").pack(pady=10)
+        self.label_total= tk.Label(frame_caja, text="")
+        self.label_total.pack(pady=10)
+
+        tk.Label(frame_caja, text="Ingreso:").pack(pady=10)
+        self.pago = tk.Entry(frame_caja, state="disabled")
+        self.pago.pack(pady=10)
+        self.label_cambio= tk.Label(frame_caja, text="")
+        self.label_cambio.pack(pady=10)
+
+        tk.Button(frame_caja, text="Ingresar", command=self.cambio_carrito).pack(pady=10)
+        tk.Button(frame_caja, text="Pagado").pack(pady=10)
+
 
     def añadir_carrito(self):
         seleccion = self.tabla_productos.tree.selection()
@@ -47,6 +64,37 @@ class Ventas(tk.Frame ):
             messagebox.showerror("Sin stock", "Este producto no tiene stock")
             return
         self.tabla_carrito.insert("", tk.END, values= (nombre,precio))
+        self.suma_carrito()
+        self.pago.config(state="normal")
+
+    def suma_carrito(self):
+        
+        total=0
+        for item in self.tabla_carrito.get_children():
+            valores =  self.tabla_carrito.item(item)["values"]
+            subtotal= float(valores[1])
+            total += subtotal
+        self.label_total.config(text=f"Total a pagar: ${total}")
+
+    def cambio_carrito(self):
+
+        if not self.tabla_carrito.get_children():
+            return messagebox.showwarning("Carrito vacío", "No hay productos en el carrito")
+        
+        try:
+            pago = float(self.pago.get())
+        except ValueError:
+            return messagebox.showerror("Error", "Ingresa una cantidad válida")
+
+        if pago< 0:
+            return messagebox.showwarning("Error", "El pago no puede ser negativo")
+
+        total_texto = self.label_total.cget("text")
+        total= float(total_texto.replace("Total a pagar: $", ""))        
+        cambio = pago - total
+        self.label_cambio.config(text=f"Cambio: {cambio}")
+
+
 
     def limpiar_campos(self):
         if not self.tabla_carrito.get_children():
@@ -56,7 +104,10 @@ class Ventas(tk.Frame ):
         if not confirmar:
             return
         self.tabla_carrito.delete(*self.tabla_carrito.get_children())
+        self.label_cambio.config(text="")
+        self.pago.delete(0, tk.END)
         messagebox.showinfo("Listo", "El carrito se vació correctamente.")
+        self.suma_carrito()
 
 
         
