@@ -6,7 +6,7 @@ from recibo import generar_ticket
 
 
 
-class Ventas(tk.Frame ):
+class Ventas(tk.Frame):
     def __init__(self, parent, controlador):
         super().__init__(parent)
         self.controlador = controlador

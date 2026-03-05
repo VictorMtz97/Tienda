@@ -1,6 +1,8 @@
 from reportlab.pdfgen import canvas
 from datetime import datetime
 from tkinter import messagebox
+from reportlab.lib.pagesizes import A4
+import os
 
 def generar_ticket(productos, total, pago, cambio):
 
@@ -8,9 +10,15 @@ def generar_ticket(productos, total, pago, cambio):
 
     if not confirmar:
         return
+    
+    carpeta_destino=r"C:\Users\USUARIO\Desktop\Programas\SistemaVentas\tickets"
+    pdf = "ticket_ventas.pdf"
+    ruta_final= os.path.join(carpeta_destino, pdf)
 
-    pdf= canvas.Canvas("ticket_ventas.pdf")
+    if not os.path.exists(carpeta_destino):
+        os.makedirs(carpeta_destino)
 
+    pdf= canvas.Canvas(ruta_final, pagesize=A4)
     y=750
 
     pdf.setFont("Helvetica", 12)
@@ -41,3 +49,4 @@ def generar_ticket(productos, total, pago, cambio):
 
     pdf.save()
 
+    print(f"Archivo guardado en: {ruta_final}")
