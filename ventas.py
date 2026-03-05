@@ -2,6 +2,7 @@ import tkinter as tk
 from  tkinter import ttk
 from productos import TablaProductos
 from tkinter import messagebox
+from recibo import generar_ticket
 
 
 
@@ -46,7 +47,7 @@ class Ventas(tk.Frame ):
         self.label_cambio.pack(pady=10)
 
         tk.Button(frame_caja, text="Ingresar", command=self.cambio_carrito).pack(pady=10)
-        tk.Button(frame_caja, text="Pagado").pack(pady=10)
+        tk.Button(frame_caja, text="Pagado", command=self.imprimir_ticket).pack(pady=10)
 
 
     def añadir_carrito(self):
@@ -94,7 +95,24 @@ class Ventas(tk.Frame ):
         cambio = pago - total
         self.label_cambio.config(text=f"Cambio: {cambio}")
 
+    def imprimir_ticket(self):
 
+        productos = []
+        total = 0
+
+        for item in self.tabla_carrito.get_children():
+            valores = self.tabla_carrito.item(item)["values"]
+
+            nombre = valores[0]
+            precio = float(valores[1])
+
+            productos.append((nombre, precio))
+            total += precio
+
+        pago = float(self.pago.get())
+        cambio = pago - total
+
+        generar_ticket(productos, total, pago, cambio)
 
     def limpiar_campos(self):
         if not self.tabla_carrito.get_children():
