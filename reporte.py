@@ -5,12 +5,12 @@ import webbrowser
 
 class Reporte(tk.Frame):
     def __init__(self, parent, controlador):
-        super().__init__(parent)
+        super().__init__(parent, bg="#355872")
         self.controlador = controlador
 
-        tk.Label(self, text="Aqui van los reportes").pack(pady=10)
+        tk.Label(self, text="Aqui se muestran los tickets.", font=("Segoe UI", 16)).pack(pady=10)
 
-        self.btn_seleccionar = tk.Button(self, text="Seleccionar Carpeta", command=self.listar_pdf)
+        self.btn_seleccionar = tk.Button(self, text="Seleccionar Carpeta", command=self.listar_pdf, font=("Segoe", 12), fg="#000000", bg="#9CD5FF")
         self.btn_seleccionar.pack(pady=10)
 
         # Listbox para mostrar los PDFs
@@ -23,7 +23,7 @@ class Reporte(tk.Frame):
         # self.listbox.config(yscrollcommand=self.scrollbar.set)
         # self.scrollbar.config(command=self.listbox.yview)
 
-        tk.Button(self,text="Abrir", command=self.abrir_archivo).pack(pady=10)
+        tk.Button(self,text="Abrir archivo", command=self.abrir_archivo, font=("Segoe", 12), fg="#000000", bg="#9CD5FF").pack(pady=10)
 
     carpeta_actual = ""
     

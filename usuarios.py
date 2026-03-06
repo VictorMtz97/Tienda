@@ -6,11 +6,11 @@ from tkinter import messagebox
 
 class Usuarios(tk.Frame):
     def __init__(self, parent, controlador):
-        super().__init__(parent)
+        super().__init__(parent, bg="#355872")
         self.controlador = controlador
 
 
-        tk.Label(self, text = "Aqui van todos los usuarios(normales y administradores)").pack(pady = 10)
+        tk.Label(self, text = "Aqui se registan los usuarios con el rol correspondiente.", font=("Segoe UI", 16)).pack(pady = 10)
 
         #Usuario
         tk.Label(self, text = "Usuario: ").pack(pady=10)
@@ -26,12 +26,12 @@ class Usuarios(tk.Frame):
         self.opcion_radio = tk.StringVar(value="")
 
         tk.Label(self, text = "Rol: ").pack(pady=10)
-        tk.Radiobutton(self, text = "Administrador", variable=self.opcion_radio, value="Administrador").pack()
-        tk.Radiobutton(self, text = "Cajero", variable=self.opcion_radio, value="Cajero").pack()
+        tk.Radiobutton(self, text = "Administrador", variable=self.opcion_radio, value="Administrador").pack(pady=10)
+        tk.Radiobutton(self, text = "Cajero", variable=self.opcion_radio, value="Cajero").pack(pady=10)
 
         #Botones
-        tk.Button(self, text = "Añadir", command= self.agregar_usuarios).pack(pady = 10)
-        tk.Button(self, text = "Eliminar", command=self.eliminar_usuario).pack(pady = 10)
+        tk.Button(self, text = "Añadir", command= self.agregar_usuarios, font=("Segoe", 12), fg="#000000", bg="#9CD5FF").pack(pady = 10)
+        tk.Button(self, text = "Eliminar", command=self.eliminar_usuario, font=("Segoe", 12), fg="#000000", bg="#9CD5FF").pack(pady = 10)
         
         #Tabla
         columnas = ("id","rol", "usuario" )

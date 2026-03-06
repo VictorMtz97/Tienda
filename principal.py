@@ -9,7 +9,7 @@ from productos import Productos
 
 class Principal(tk.Frame,):
     def __init__(self, parent, controlador):
-        super().__init__(parent, bg="#3A9AFF")
+        super().__init__(parent, bg="#355872")
         self.controlador = controlador
         self.label_texto_p = tk.Label(self, text="Pagina principal").pack(pady=10)
 
@@ -24,8 +24,8 @@ class Principal(tk.Frame,):
 
         self.notebook.add(self.frame_ventas, text="Ventas")
         self.notebook.add(self.frame_reportes, text="Reportes")
-        self.notebook.add(self.frame_prodcutos, text="Registro productos")
-        self.notebook.add(self.frame_usuarios, text="Registro usuaios")
+        self.notebook.add(self.frame_prodcutos, text="Registrar Productos")
+        self.notebook.add(self.frame_usuarios, text="Registrar Usuaios")
 
     def actualizar_tablas(self, event=None):
         # pestaña_actual = event.widget.select()

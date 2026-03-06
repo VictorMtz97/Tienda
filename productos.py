@@ -7,25 +7,25 @@ import csv
 
 class Productos(tk.Frame):
     def __init__(self, parent, controlador):
-        super().__init__(parent)
+        super().__init__(parent, bg="#355872")
         self.controlador = controlador
 
-        tk.Label(self, text="Aqui van los productos").pack(pady=10)
+        tk.Label(self, text="En esta ventana se añaden los productos.",font=("Segoe UI", 16)).pack(pady=10)
 
-        tk.Label(self, text = "Nombre del producto").pack(pady=10)
+        tk.Label(self, text = "Nombre del producto", font=("Segoe UI", 12), fg="#000000").pack(pady=10)
         self.producto_entry = tk.Entry(self)
         self.producto_entry.pack(pady=5)
 
-        tk.Label(self, text = "Precio del producto").pack(pady=10)
+        tk.Label(self, text = "Precio del producto",font=("Segoe UI", 12), fg="#000000").pack(pady=10)
         self.precio_entry = tk.Entry(self)
         self.precio_entry.pack(pady=5)
 
-        tk.Label(self, text = "Cantidad en stock del producto").pack(pady=10)
+        tk.Label(self, text = "Cantidad en stock del producto", font=("Segoe UI", 12), fg="#000000").pack(pady=10)
         self.stock_entry = tk.Entry(self)
         self.stock_entry.pack(pady=5)
 
-        tk.Button(self, text="Añadir", command=self.agregar_productos).pack(pady=10)
-        tk.Button(self, text="Eliminar", command=self.eliminar_producto).pack(pady=10)
+        tk.Button(self, text="Añadir", command=self.agregar_productos,font=("Segoe", 12), fg="#000000", bg="#9CD5FF").pack(pady=10)
+        tk.Button(self, text="Eliminar", command=self.eliminar_producto, font=("Segoe", 12), fg="#000000", bg="#9CD5FF").pack(pady=10)
 
         self.tabla = TablaProductos(self)
         self.tabla.pack(fill="both", expand=True, pady=20)
@@ -132,7 +132,7 @@ class Productos(tk.Frame):
 #Aqui se cargan los productos hacia ventana 
 class TablaProductos(tk.Frame):
     def __init__(self, parent):
-        super().__init__(parent)
+        super().__init__(parent, bg="#355872") 
 
                 #Tabla Productos
         columnas = ("id","Nombre", "Precio", "Cantidad")
