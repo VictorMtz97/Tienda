@@ -61,16 +61,16 @@ class Productos(tk.Frame):
             nuevo_id = len(reader) + 1
         else:
             nuevo_id = 1
-
+        #Aqui se guardan
         with open(archivo, "a", newline="") as f:
             writer = csv.writer(f)
             writer.writerow([nuevo_id, nombre, precio, stock])
 
+        self.controlador.actualizar_tablas()
 
         self.tree.insert("", tk.END, values=(nuevo_id, nombre, precio, stock))
 
         # actualizar tabla de ventas    
-        
         self.limpiar_campos()
         messagebox.showinfo("Confirmado","El producto se añadio correctamente")
 
@@ -149,7 +149,8 @@ class TablaProductos(tk.Frame):
 
     def cargar_productos(self):
         archivo = "productos.csv"
-
+        if not os.path.exists(archivo):
+            return
         for fila in self.tree.get_children():
             self.tree.delete(fila)
 

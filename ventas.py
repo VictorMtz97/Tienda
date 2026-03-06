@@ -23,6 +23,7 @@ class Ventas(tk.Frame):
         self.tabla_productos = TablaProductos(frame_tablas)
         self.tabla_productos.pack(side="left", fill="y", pady=10)
         #Tabla de productos
+        
 
         #Tabla Carrito
         columnas = ("id","nombre","precio")

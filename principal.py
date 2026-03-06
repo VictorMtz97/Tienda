@@ -27,11 +27,21 @@ class Principal(tk.Frame,):
         self.notebook.add(self.frame_prodcutos, text="Registro productos")
         self.notebook.add(self.frame_usuarios, text="Registro usuaios")
 
-    def actualizar_tablas(self, event):
-        pestaña_actual = event.widget.select()
-        frame= event.widget.nametowidget(pestaña_actual)
+    def actualizar_tablas(self, event=None):
+        # pestaña_actual = event.widget.select()
+        # frame= event.widget.nametowidget(pestaña_actual)
 
-        if hasattr(frame, "tabla"):
-            frame.tabla.cargar_productos()
+        #Actualiza la tabla ventas
+        if hasattr(self.frame_ventas, "tabla_productos"):
+            self.frame_ventas.tabla_productos.cargar_productos()
+
+        #Actualiza la tabla productos
+        if hasattr(self.frame_prodcutos, "tabla"):
+            self.frame_prodcutos.tabla.cargar_productos()
+
+        # if hasattr(frame, "tabla"):
+        #     frame.tabla.cargar_productos()
+
+
 
 
