@@ -41,12 +41,24 @@ class Productos(tk.Frame):
         if not nombre or not precio or not stock:
            return messagebox.showwarning("Advertencia", "Te falto un dato revisa de nuevo")
 
+        try:
+            precio = float(precio)
+            stock = int(stock)
+        except ValueError:
+            return messagebox.showerror("Error", "Precio o stock inválido")
+
         archivo="productos.csv"
 
         if os.path.exists(archivo):
             with open(archivo, "r", newline="") as f:
-                reader= list(csv.reader(f))
-                nuevo_id = len(reader)
+                reader = list(csv.reader(f))
+
+            # Evitar productos repetidos
+            for producto in reader:
+                if producto[1].lower() == nombre.lower():
+                    return messagebox.showwarning("Advertencia","Este producto ya existe")
+
+            nuevo_id = len(reader) + 1
         else:
             nuevo_id = 1
 
@@ -54,9 +66,13 @@ class Productos(tk.Frame):
             writer = csv.writer(f)
             writer.writerow([nuevo_id, nombre, precio, stock])
 
+
         self.tree.insert("", tk.END, values=(nuevo_id, nombre, precio, stock))
 
+        # actualizar tabla de ventas    
+        self.controlador.frames["Ventas"].tabla_productos.cargar_productos()
         self.limpiar_campos()
+        messagebox.showinfo("Confirmado","El producto se añadio correctamente")
 
 
     def eliminar_producto(self):
@@ -113,6 +129,7 @@ class Productos(tk.Frame):
         self.precio_entry.delete(0, tk.END)
         self.stock_entry.delete(0, tk.END)
 
+#Aqui se cargan los productos hacia ventana 
 class TablaProductos(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
@@ -133,13 +150,11 @@ class TablaProductos(tk.Frame):
     def cargar_productos(self):
         archivo = "productos.csv"
 
-        for item in self.tree.get_children():
-            self.tree.delete(item)
+        for fila in self.tree.get_children():
+            self.tree.delete(fila)
 
-        if os.path.exists(archivo):
-            with open(archivo, "r", newline="") as f:
-                reader = csv.reader(f)
-                for fila in reader:
-                    if not fila:
-                        continue
-                    self.tree.insert("", tk.END, values=fila)
+        with open(archivo, "r", newline="") as f:
+            reader = csv.reader(f)
+
+            for fila in reader:
+                self.tree.insert("", tk.END, values=fila)

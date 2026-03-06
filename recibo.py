@@ -12,17 +12,22 @@ def generar_ticket(productos, total, pago, cambio):
         return
     
     carpeta_destino=r"C:\Users\USUARIO\Desktop\Programas\SistemaVentas\tickets"
-    pdf = "ticket_ventas.pdf"
-    ruta_final= os.path.join(carpeta_destino, pdf)
+
 
     if not os.path.exists(carpeta_destino):
         os.makedirs(carpeta_destino)
+
+    archivos = os.listdir(carpeta_destino)
+    numero_ticket= len(archivos) + 1
+
+    nombre_pdf = f"ticket_{numero_ticket}.pdf"
+    ruta_final= os.path.join(carpeta_destino, nombre_pdf)
 
     pdf= canvas.Canvas(ruta_final, pagesize=A4)
     y=750
 
     pdf.setFont("Helvetica", 12)
-    pdf.drawString(50, y , "Ticket Venta")
+    pdf.drawString(50, y , f"Ticket Venta #{numero_ticket}")
     y-=30
 
     fecha= datetime.now().strftime("%d/%m/%Y %H:%M")
@@ -35,7 +40,7 @@ def generar_ticket(productos, total, pago, cambio):
 
     for nombre, precio in productos:
         pdf.drawString(50, y, nombre)
-        pdf.drawString(2000, y, f"${precio}")
+        pdf.drawString(200, y, f"${precio}")
         y-=20
 
     y -= 20

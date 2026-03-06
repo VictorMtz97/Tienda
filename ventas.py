@@ -3,6 +3,7 @@ from  tkinter import ttk
 from productos import TablaProductos
 from tkinter import messagebox
 from recibo import generar_ticket
+import csv
 
 
 
@@ -32,7 +33,7 @@ class Ventas(tk.Frame):
         self.tabla_carrito.column("precio", width=100, anchor="center")
         self.tabla_carrito.pack(side="left", fill="y", padx=10)
         #Tabla Carrito
-        
+
         frame_caja= tk.Frame(self)
         frame_caja.pack(side="right", fil="y", pady=10)
 
@@ -46,6 +47,7 @@ class Ventas(tk.Frame):
         self.label_cambio= tk.Label(frame_caja, text="")
         self.label_cambio.pack(pady=10)
 
+
         tk.Button(frame_caja, text="Ingresar", command=self.cambio_carrito).pack(pady=10)
         tk.Button(frame_caja, text="Pagado", command=self.imprimir_ticket).pack(pady=10)
 
@@ -54,22 +56,48 @@ class Ventas(tk.Frame):
         seleccion = self.tabla_productos.tree.selection()
         if not seleccion:
              return messagebox.showwarning("Advertencia","no se ha seleccionado ninguno para eliminar")
-        
-        valores = self.tabla_productos.tree.item(seleccion[0])["values"]
 
+        item = seleccion[0]
+        valores = self.tabla_productos.tree.item(item)["values"]
+
+        id_producto = valores[0]
         nombre = valores[1]
         precio = valores[2]
-        stock = valores[3]
+        stock = int(valores[3])
 
+        #Valido el stock
         if stock <= 0:
             messagebox.showerror("Sin stock", "Este producto no tiene stock")
             return
+        #Reducimos el stock
+        stock = int(stock) - 1
+
+        #Se actualiza la tabla
+        self.tabla_productos.tree.item(item, values=(id_producto, nombre, precio, stock))
+
         self.tabla_carrito.insert("", tk.END, values= (nombre,precio))
         self.suma_carrito()
         self.pago.config(state="normal")
 
+    def actualizar_csv(id_producto,nuevo_stock):
+        archivo = "productos.csv"
+        filas = []
+
+        with open(archivo, "r", newline="") as f:
+            reader = csv.reader(f)
+
+        for fila in reader:
+            if fila[0] == str(id_producto):
+                fila[3] = str(nuevo_stock)
+
+            filas.append(fila)
+
+        with open(archivo, "w", newline="") as f:
+            writer = csv.writer(f)
+            writer.writerows(filas)
+
     def suma_carrito(self):
-        
+
         total=0
         for item in self.tabla_carrito.get_children():
             valores =  self.tabla_carrito.item(item)["values"]
@@ -81,7 +109,7 @@ class Ventas(tk.Frame):
 
         if not self.tabla_carrito.get_children():
             return messagebox.showwarning("Carrito vacío", "No hay productos en el carrito")
-        
+
         try:
             pago = float(self.pago.get())
         except ValueError:
@@ -91,7 +119,7 @@ class Ventas(tk.Frame):
             return messagebox.showwarning("Error", "El pago no puede ser negativo")
 
         total_texto = self.label_total.cget("text")
-        total= float(total_texto.replace("Total a pagar: $", ""))        
+        total= float(total_texto.replace("Total a pagar: $", ""))
         cambio = pago - total
         self.label_cambio.config(text=f"Cambio: {cambio}")
 
@@ -114,6 +142,8 @@ class Ventas(tk.Frame):
 
         generar_ticket(productos, total, pago, cambio)
 
+        self.limpiar_campos()
+
     def limpiar_campos(self):
         if not self.tabla_carrito.get_children():
             messagebox.showinfo("Carrito Vacio","No hay productos en el carrito")
@@ -124,8 +154,10 @@ class Ventas(tk.Frame):
         self.tabla_carrito.delete(*self.tabla_carrito.get_children())
         self.label_cambio.config(text="")
         self.pago.delete(0, tk.END)
-        messagebox.showinfo("Listo", "El carrito se vació correctamente.")
+        messagebox.showinfo("Listo", "El carrito se limpio.")
         self.suma_carrito()
 
 
-        
+
+
+

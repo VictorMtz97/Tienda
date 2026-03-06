@@ -26,6 +26,7 @@ class Reporte(tk.Frame):
         tk.Button(self,text="Abrir", command=self.abrir_archivo).pack(pady=10)
 
     carpeta_actual = ""
+    
     def listar_pdf(self):
         global carpeta_actual
         ruta = filedialog.askdirectory()
