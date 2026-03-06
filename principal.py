@@ -9,7 +9,7 @@ from productos import Productos
 
 class Principal(tk.Frame,):
     def __init__(self, parent, controlador):
-        super().__init__(parent)
+        super().__init__(parent, bg="#3A9AFF")
         self.controlador = controlador
         self.label_texto_p = tk.Label(self, text="Pagina principal").pack(pady=10)
 
