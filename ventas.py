@@ -25,10 +25,12 @@ class Ventas(tk.Frame):
         #Tabla de productos
 
         #Tabla Carrito
-        columnas = ("nombre","precio")
+        columnas = ("id","nombre","precio")
         self.tabla_carrito = ttk.Treeview(frame_tablas, columns = columnas, show= "headings")
+        self.tabla_carrito.heading("id", text="ID")
         self.tabla_carrito.heading("nombre", text = "Nombre")
         self.tabla_carrito.heading("precio", text = "Precio")
+        self.tabla_carrito.column("id", width=50, anchor="center")
         self.tabla_carrito.column("nombre", width=150, anchor="center")
         self.tabla_carrito.column("precio", width=100, anchor="center")
         self.tabla_carrito.pack(side="left", fill="y", padx=10)
@@ -60,7 +62,7 @@ class Ventas(tk.Frame):
         item = seleccion[0]
         valores = self.tabla_productos.tree.item(item)["values"]
 
-        id_producto = valores[0]
+        id = valores[0]
         nombre = valores[1]
         precio = valores[2]
         stock = int(valores[3])
@@ -69,28 +71,25 @@ class Ventas(tk.Frame):
         if stock <= 0:
             messagebox.showerror("Sin stock", "Este producto no tiene stock")
             return
-        #Reducimos el stock
-        stock = int(stock) - 1
 
-        #Se actualiza la tabla
-        self.tabla_productos.tree.item(item, values=(id_producto, nombre, precio, stock))
+        self.tabla_carrito.insert("", tk.END, values= (id, nombre,precio))
 
-        self.tabla_carrito.insert("", tk.END, values= (nombre,precio))
         self.suma_carrito()
         self.pago.config(state="normal")
+        
 
-    def actualizar_csv(id_producto,nuevo_stock):
+    def actualizar_csv(self,id_producto,nuevo_stock):
         archivo = "productos.csv"
         filas = []
 
         with open(archivo, "r", newline="") as f:
             reader = csv.reader(f)
 
-        for fila in reader:
-            if fila[0] == str(id_producto):
-                fila[3] = str(nuevo_stock)
+            for fila in reader:
+                if fila[0] == str(id_producto):
+                    fila[3] = str(nuevo_stock)
 
-            filas.append(fila)
+                filas.append(fila)
 
         with open(archivo, "w", newline="") as f:
             writer = csv.writer(f)
@@ -101,7 +100,7 @@ class Ventas(tk.Frame):
         total=0
         for item in self.tabla_carrito.get_children():
             valores =  self.tabla_carrito.item(item)["values"]
-            subtotal= float(valores[1])
+            subtotal= float(valores[2])
             total += subtotal
         self.label_total.config(text=f"Total a pagar: ${total}")
 
@@ -129,20 +128,47 @@ class Ventas(tk.Frame):
         total = 0
 
         for item in self.tabla_carrito.get_children():
+
             valores = self.tabla_carrito.item(item)["values"]
 
-            nombre = valores[0]
-            precio = float(valores[1])
+            id_producto = valores[0]
+            nombre = valores[1]
+            precio = float(valores[2])
 
             productos.append((nombre, precio))
             total += precio
+
+            # descontar stock
+            self.descontar_stock(id_producto)
 
         pago = float(self.pago.get())
         cambio = pago - total
 
         generar_ticket(productos, total, pago, cambio)
-
         self.limpiar_campos()
+
+    def descontar_stock(self, id_producto):
+        
+        archivo = "productos.csv"
+        filas = []
+
+        with open(archivo,"r",newline="") as f:
+            reader = csv.reader(f)
+
+            for fila in reader:
+
+                if fila[0] == str(id_producto):
+
+                    stock = int(fila[3])
+                    stock -= 1
+                    fila[3] = str(stock)
+
+                filas.append(fila)
+
+        with open(archivo,"w",newline="") as f:
+            writer = csv.writer(f)
+            writer.writerows(filas)
+
 
     def limpiar_campos(self):
         if not self.tabla_carrito.get_children():

@@ -70,7 +70,7 @@ class Productos(tk.Frame):
         self.tree.insert("", tk.END, values=(nuevo_id, nombre, precio, stock))
 
         # actualizar tabla de ventas    
-        self.controlador.frames["Ventas"].tabla_productos.cargar_productos()
+        
         self.limpiar_campos()
         messagebox.showinfo("Confirmado","El producto se añadio correctamente")
 
